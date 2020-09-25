@@ -56,7 +56,7 @@ const findVoteResult = (latestBlockHeight, voting) => {
     return Promise.resolve(`${name}: ${blockToTimeMsg(voting.height - latestBlockHeight)} до результата`);
   }
 
-  return fetch(`https://blockchain.info/block-height/${voting.height}?format=json&cors=true`)
+  return fetch(`https://blockchain.info/block-height/${voting.height}?format=json&cors=true`, { mode: 'no-cors' })
     .then(blob => blob.json())
     .then(data => {
       const {hash} = data.blocks[0];
