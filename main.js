@@ -48,7 +48,7 @@ const findVoteResult = (latestBlockHeight, voting) => {
   return fetch(`https://api.blockchair.com/bitcoin/raw/block/${voting.height}`)
     .then(blob => blob.json())
     .then(data => {
-      const {hash} = data.decoded_raw_block;
+      const {hash} = data.data[`${voting.height}`].decoded_raw_block.hash;
       const hashInt = BigInt("0x" + hash)
 
       const idx = hashInt % BigInt(candidates.length);
