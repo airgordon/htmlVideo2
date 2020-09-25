@@ -76,7 +76,7 @@ const notYet = (err) => {
   main.innerText = "Всё пропало!";
 };
 
-fetch(`https://blockchain.info/latestblock?format=json&cors=true`)
+fetch(`https://blockchain.info/latestblock?format=json&cors=true`, { mode: 'no-cors' })
   .then(blob => blob.json())
   .then(data => data.height)
   .then((height) => Promise.all(votes.map((vote) => findVoteResult(height, vote))))
