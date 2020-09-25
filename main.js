@@ -45,7 +45,7 @@ const findVoteResult = (latestBlockHeight, voting) => {
     return Promise.resolve(`${name}: ${blockToTimeMsg(voting.height - latestBlockHeight)} до результата`);
   }
 
-  return fetch(`ttps://api.blockchair.com/bitcoin/raw/block/${voting.height}`)
+  return fetch(`https://api.blockchair.com/bitcoin/raw/block/${voting.height}`)
     .then(blob => blob.json())
     .then(data => {
       const {hash} = data.decoded_raw_block;
