@@ -24,7 +24,7 @@ const votes = [
   {
     name: 'голосование 5',
     candidates: ['airgordon', 'cat'],
-    height: 563257
+    height: 649940
   }
 ];
 
@@ -56,7 +56,7 @@ const findVoteResult = (latestBlockHeight, voting) => {
     return Promise.resolve(`${name}: ${blockToTimeMsg(voting.height - latestBlockHeight)} до результата`);
   }
 
-  return fetch(`https://cors.io/?https://blockchain.info/block-height/${voting.height}?format=json`)
+  return fetch(`https://blockchain.info/block-height/${voting.height}?format=json&cors=true`)
     .then(blob => blob.json())
     .then(data => {
       const {hash} = data.blocks[0];
@@ -76,7 +76,7 @@ const notYet = (err) => {
   main.innerText = "Всё пропало!";
 };
 
-fetch(`https://cors.io/?https://blockchain.info/latestblock`)
+fetch(`https://blockchain.info/latestblock`)
   .then(blob => blob.json())
   .then(data => data.height)
   .then((height) => Promise.all(votes.map((vote) => findVoteResult(height, vote))))
