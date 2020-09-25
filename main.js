@@ -28,17 +28,6 @@ const votes = [
   }
 ];
 
-function xmur3(str) {
-  for (var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
-    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
-  h = h << 13 | h >>> 19;
-  return function () {
-    h = Math.imul(h ^ h >>> 16, 2246822507);
-    h = Math.imul(h ^ h >>> 13, 3266489909);
-    return (h ^= h >>> 16) >>> 0;
-  }
-}
-
 const blockToTimeMsg = (x) => {
   if (x < 3)
     return `${20 * x} минут`;
@@ -56,13 +45,13 @@ const findVoteResult = (latestBlockHeight, voting) => {
     return Promise.resolve(`${name}: ${blockToTimeMsg(voting.height - latestBlockHeight)} до результата`);
   }
 
-  return fetch(`https://blockchain.info/block-height/${voting.height}?format=json&cors=true`, { mode: 'no-cors' })
+  return fetch(`ttps://api.blockchair.com/bitcoin/raw/block/${voting.height}`)
     .then(blob => blob.json())
     .then(data => {
-      const {hash} = data.blocks[0];
+      const {hash} = data.decoded_raw_block;
+      const hashInt = BigInt("0x" + hash)
 
-      const rnd = xmur3(hash);
-      const idx = rnd() % candidates.length;
+      const idx = hashInt % BigInt(candidates.length);
       return `${name}: ${candidates[idx]}`;
     });
 };
