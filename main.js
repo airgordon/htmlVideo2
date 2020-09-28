@@ -25,6 +25,11 @@ const votes = [
     name: 'голосование 5',
     candidates: ['airgordon', 'cat'],
     height: 649940
+  },
+  {
+    name: 'голосование 6',
+    candidates: ['airgordon', 'cat'],
+    height: 749940
   }
 ];
 
@@ -42,34 +47,48 @@ const findVoteResult = (latestBlockHeight, voting) => {
   const {candidates, name} = voting;
 
   if (voting.height > latestBlockHeight) {
-    return Promise.resolve(`${name}: ${blockToTimeMsg(voting.height - latestBlockHeight)} до результата`);
+    return  {...voting, ready: false, wait: voting.height - latestBlockHeight};
   }
 
   return fetch(`https://api.blockchair.com/bitcoin/raw/block/${voting.height}`)
     .then(blob => blob.json())
-    .then(data => {
-      const data2 = data.data;
-      const block = data2[voting.height];
-      const decBlock = block.decoded_raw_block
-      const { hash } = decBlock;
-      const hashInt = BigInt("0x" + hash)
-
-      const idx = hashInt % BigInt(candidates.length);
-      return `${name}: ${candidates[idx]}`;
+    .then(res => {
+      const { data } = res;
+      const block = data[voting.height];
+      return vote(block, voting);
     });
 };
 
+const vote = (block, voting) => {
+  const {candidates, name} = voting;
+  
+  const decBlock = block.decoded_raw_block;
+  const { hash } = decBlock;
+  const hashInt = BigInt("0x" + hash)
+
+  const idx = hashInt % BigInt(candidates.length);
+  return {...voting, ready: true, hash, winner: candidates[idx]}
+}
+
 const publishResults = (data) => {
-  main.innerText = data.join('\n');
+  
+  main.innerText = data.map(result => {
+    if (result.ready) {
+      return `${name}\nКандидаты: ${result.candidates}\nБлок: ${result.height} ${result.hash}\nПобедитель: ${result.winner}\n`
+    } else {
+      return `${name}\nКандидаты: ${result.candidates}\nБлок: ${result.height}\n${blockToTimeMsg(result.wait)} до результата\n`
+    }
+  })
+  .join('\n');
 };
 
-const notYet = (err) => {
+const error = (err) => {
   console.error(err);
-  main.innerText = "Всё пропало!";
+  main.innerText = "Всё пропало! " + JSON.stringify(err);
 };
 
 fetch(`https://blockchain.info/latestblock?format=json&cors=true`)
   .then(blob => blob.json())
   .then(data => data.height)
   .then((height) => Promise.all(votes.map((vote) => findVoteResult(height, vote))))
-  .then(publishResults, notYet);
+  .then(publishResults, error);
