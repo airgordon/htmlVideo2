@@ -22,11 +22,6 @@ const votes = [
     height: 563170
   },
   {
-    name: 'Голосование 5',
-    candidates: ['airgordon', 'cat'],
-    height: 649940
-  },
-  {
     name: 'Голосование 6',
     candidates: ['airgordon', 'cat'],
     height: 749940
