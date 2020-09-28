@@ -87,6 +87,6 @@ const error = (err) => {
 
 fetch(`https://api.blockchair.com/bitcoin/stats`)
   .then(blob => blob.json())
-  .then(data => data.best_block_height)
+  .then(res => res.data.best_block_height)
   .then((height) => Promise.all(votes.map((vote) => findVoteResult(height, vote))))
   .then(publishResults, error);
