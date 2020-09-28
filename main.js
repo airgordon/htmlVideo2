@@ -50,20 +50,18 @@ const findVoteResult = (latestBlockHeight, voting) => {
     return  {...voting, ready: false, wait: voting.height - latestBlockHeight};
   }
 
-  return fetch(`https://api.blockchair.com/bitcoin/raw/block/${voting.height}`)
+  return fetch(`https://api.blockchair.com/bitcoin/blocks?q=id(${voting.height})&fields=hash`)
     .then(blob => blob.json())
     .then(res => {
       const { data } = res;
-      const block = data[voting.height];
+      const block = data[0];
       return vote(block, voting);
     });
 };
 
 const vote = (block, voting) => {
   const {candidates, name} = voting;
-  
-  const decBlock = block.decoded_raw_block;
-  const { hash } = decBlock;
+  const { hash } = block;
   const hashInt = BigInt("0x" + hash)
 
   const idx = hashInt % BigInt(candidates.length);
@@ -87,8 +85,8 @@ const error = (err) => {
   main.innerText = "Всё пропало! " + JSON.stringify(err);
 };
 
-fetch(`https://blockchain.info/latestblock?format=json&cors=true`)
+fetch(`https://api.blockchair.com/bitcoin/stats`)
   .then(blob => blob.json())
-  .then(data => data.height)
+  .then(data => data.best_block_height)
   .then((height) => Promise.all(votes.map((vote) => findVoteResult(height, vote))))
   .then(publishResults, error);
