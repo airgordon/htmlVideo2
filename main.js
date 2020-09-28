@@ -74,9 +74,9 @@ const publishResults = (data) => {
   
   main.innerText = data.map(result => {
     if (result.ready) {
-      return `${name}\nКандидаты: ${result.candidates}\nБлок: ${result.height} ${result.hash}\nПобедитель: ${result.winner}\n`
+      return `${result.name}\nКандидаты: ${result.candidates}\nБлок: ${result.height} ${result.hash}\nПобедитель: ${result.winner}\n`
     } else {
-      return `${name}\nКандидаты: ${result.candidates}\nБлок: ${result.height}\n${blockToTimeMsg(result.wait)} до результата\n`
+      return `${result.name}\nКандидаты: ${result.candidates}\nБлок: ${result.height}\n${blockToTimeMsg(result.wait)} до результата\n`
     }
   })
   .join('\n');
