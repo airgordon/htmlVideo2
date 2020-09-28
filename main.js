@@ -70,17 +70,36 @@ const vote = (block, voting) => {
 
 const publishResults = (data) => {
   
-  main.innerText = data.map(result => {
+  data.forEach(result => {
+    const record = document.createElement("p");
+    
+    const header = document.createElement("h4");
+    header.innerText = result.name;
+    record.appendChild(header);
+    
+    const candidates = document.createElement("span");
+    candidates.innerText = `Кандидаты: ${result.candidates}`;
+    record.appendChild(candidates);
+    
+    const block = document.createElement("span");
+    block.innerText = result.ready ? `Блок: ${result.height} ${result.hash}` : `Блок: ${result.height}`;
+    record.appendChild(block);
+    
     if (result.ready) {
-      return `${result.name}\nКандидаты: ${result.candidates}\nБлок: ${result.height} ${result.hash}\nПобедитель: ${result.winner}\n`
+      const winner = document.createElement("span");
+      winner.innerText = `Победитель: ${result.winner}`;
+      record.appendChild(winner);
     } else {
-      return `${result.name}\nКандидаты: ${result.candidates}\nБлок: ${result.height}\n${blockToTimeMsg(result.wait)} до результата\n`
+      const wait = document.createElement("span");
+      wait.innerText = `${blockToTimeMsg(result.wait)} до результата`;
+      record.appendChild(wait);
     }
-  })
-  .join('\n');
+    
+    main.appendChild(record);
+  });
 };
 
-const error = (err) => {
+const handleError = (err) => {
   console.error(err);
   main.innerText = "Всё пропало! " + JSON.stringify(err);
 };
@@ -89,4 +108,4 @@ fetch(`https://api.blockchair.com/bitcoin/stats`)
   .then(blob => blob.json())
   .then(res => res.data.best_block_height)
   .then((height) => Promise.all(votes.map((vote) => findVoteResult(height, vote))))
-  .then(publishResults, error);
+  .then(publishResults, handleError);
