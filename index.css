@@ -1,0 +1,7 @@
+div:nth-child(even) {
+  background-color: aliceblue;
+}
+
+#main {
+  font-family: monospace;
+}
