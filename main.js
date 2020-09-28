@@ -2,32 +2,32 @@ const main = document.getElementById("main");
 
 const votes = [
   {
-    name: 'голосование 1',
+    name: 'Голосование 1',
     candidates: ['airgordon', 'cat'],
     height: 563144
   },
   {
-    name: 'голосование 2',
+    name: 'Голосование 2',
     candidates: ['airgordon', 'cat'],
     height: 563157
   },
   {
-    name: 'голосование 3',
+    name: 'Голосование 3',
     candidates: ['airgordon', 'cat'],
     height: 563160
   },
   {
-    name: 'голосование 4',
+    name: 'Голосование 4',
     candidates: ['airgordon', 'cat'],
     height: 563170
   },
   {
-    name: 'голосование 5',
+    name: 'Голосование 5',
     candidates: ['airgordon', 'cat'],
     height: 649940
   },
   {
-    name: 'голосование 6',
+    name: 'Голосование 6',
     candidates: ['airgordon', 'cat'],
     height: 749940
   }
@@ -71,26 +71,26 @@ const vote = (block, voting) => {
 const publishResults = (data) => {
   
   data.forEach(result => {
-    const record = document.createElement("p");
+    const record = document.createElement("div");
     
     const header = document.createElement("h4");
     header.innerText = result.name;
     record.appendChild(header);
     
-    const candidates = document.createElement("span");
+    const candidates = document.createElement("p");
     candidates.innerText = `Кандидаты: ${result.candidates}`;
     record.appendChild(candidates);
     
-    const block = document.createElement("span");
+    const block = document.createElement("p");
     block.innerText = result.ready ? `Блок: ${result.height} ${result.hash}` : `Блок: ${result.height}`;
     record.appendChild(block);
     
     if (result.ready) {
-      const winner = document.createElement("span");
+      const winner = document.createElement("p");
       winner.innerText = `Победитель: ${result.winner}`;
       record.appendChild(winner);
     } else {
-      const wait = document.createElement("span");
+      const wait = document.createElement("p");
       wait.innerText = `${blockToTimeMsg(result.wait)} до результата`;
       record.appendChild(wait);
     }
